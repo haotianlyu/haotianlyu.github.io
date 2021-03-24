@@ -28,7 +28,7 @@ zookeeper可以做 配置管理，命名服务， 提供分布式同步，以及
 
 当一个集群里面有数以千计的services运行在数以千计的服务上面，并且需要动态的注册和获取services信息的时候，我们就可以使用zookeeper。由于zookeeper提供watches，因此每当有新的service注册或者有service失去连接，client都会被notify。类似于DNS服务。
 
-![Znode Structure](C:\Users\HaotianLyu\Documents\GitHub\haotianlyu.github.io\images\Znode_for_naming_service.jpg)
+![Znode Structure](https://github.com/haotianlyu/haotianlyu.github.io/blob/master/images/Znode_for_naming_service.jpg?raw=true)
 
 已知的例子有：1）Netflix的Curator
 
