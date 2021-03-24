@@ -8,8 +8,6 @@ tags: [zookeeper]
 comments: true
 ---
 
-#                                 Zookeeper学习（1）
-
 Zookeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.
 
 zookeeper可以做 配置管理，命名服务， 提供分布式同步，以及提供集群管理。
