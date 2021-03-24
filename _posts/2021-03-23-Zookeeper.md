@@ -1,4 +1,3 @@
-```
 ---
 layout: post
 title: Zookeeper学习（1）
@@ -7,8 +6,7 @@ Author: Jack
 categories: [Zookeeper]
 tags: [zookeeper]
 comments: true
---- 
-```
+---
 
 #                                 Zookeeper学习（1）
 
