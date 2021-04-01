@@ -32,6 +32,12 @@ zookeeper可以做 配置管理，命名服务， 提供分布式同步，以及
 
 ### **分布式锁**
 
+*Exclusive Lock排他锁*
+
+由于同一路径下Znode名称唯一，因此在需要调用排他锁的情况下，所有的客户端都通过调用create方法试图在锁/exclusive_lock的节点下创建临时子节点/exclusive_lock/lock，这样每次有且只有一个客户端能够创建成功，而其他客户端将会对/exclusive_lock路径设置子节点变更watcher，这样在锁被释放（/exclusive_lock/lock节点被删除）时，他们可以重新获得锁。
+
+*Shared Lock共享锁*
+
 当多个客户端向zookeeper请求一把分布式锁，每个客户端的请求相当于在锁的Znode节点上创建一个临时有序节点（ephemeral sequential node). 添加节点后，客户端会从zookeeper获取锁所在的Znode下面的所有子节点，然后他会查看自己的创建的节点的sequence number是不是最小的，如果是最小的，那么就相当于加锁成功，如果不是最小的，就对比自己创建的有序节点-1的那个节点设置watch，这样当上一个有序节点完成，上一个获得锁的客户端会通过在zookeeper删除节点来释放锁，这样watch会通知当前节点锁被释放，这时，客户端会重新从zookeeper获得锁所在的Znode的children节点，然后判断是否自己是第一位。如果一个客户端向zookeeper添加了上锁请求后失去响应，那么zookeeper会检测到该客户端失去响应，从而会自动释放节点。
 
 例子：客户端A,B向zookeeper的my_lock分布式锁申请锁，A先发出了请求，那么zookeeper会在my_lock这个znode下面创建一个新的临时子node叫xxxxx-0000001。之后B又发出了请求，这时zookeeper会在my_lock下面创建另一个临时子node叫xxxxx-0000002。A发出请求后会向zookeeper请求getChild(my_lock), 得到[xxxxx-0000001, xxxxx-0000002], 由于自己的序号是最小的，因此相当于确认了自己获得了分布式锁。B发出请求后也向zookeeper请求getChild(my_lock), 得到[xxxxx-0000001, xxxxx-0000002], 由于自己不是最小的，所以对znode xxxxx-0000001添加watch，当A完成任务，释放锁，A会通过delete操作删除临时子节点，watch会notify B，此时B再次向zookeeper getChild(my lock)得到的就是[xxxxx-0000002], 自己是最小的，因此可以获得锁。
